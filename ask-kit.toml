@@ -1,0 +1,40 @@
+id = "temet.desktop"
+name = "desktop"
+version = "0.1.0"
+min_ask_kit = "0.2.0"
+platforms = ["linux"]
+requires = ["hyprctl", "grim", "tesseract", "omarchy"]
+says = "a Linux desktop (Hyprland on Omarchy, Wayland) as it is right now: which windows are open, on which workspace and monitor, which is focused, their class, title, size and floating or tiled; which monitors are connected with resolution, scale and position; which keybinding does what as Hyprland has it loaded; which window and layer rules apply; the current theme, font and background; the Omarchy version and which omarchy command does a job; what text a window or screen region shows (screenshot and OCR); and operating it (focus, move, resize, close or float a window, switch workspace, launch an app, reload Hyprland, change theme or font, click, type and press keys)"
+keywords = ["hyprland", "hyprctl", "omarchy", "windows?", "(hyprland|desktop|switch(ing)? to|move (it|this|the window) to) workspaces?", "workspace \\d+", "monitors?", "displays?", "screens?", "screenshots?", "ocr", "keybind(ing)?s?", "keyboard shortcuts?", "window rules?", "layer rules?", "theme", "fonts?", "wallpaper|background", "focus(ed)?", "floating|tiled", "desktop", "on screen|on my screen", "waybar|bar"]
+route_hint = "the live state of the desktop (open windows, monitors, loaded keybindings, active rules, theme and font now, what a window shows) and operating it (focus, move, close, launch, click, type, omarchy commands) is desktop; which file in ~/.config sets a keybinding, rule, theme or font is dotfiles (this kit then verifies it after a reload); services, logs and processes are ops or systemd; a web page in a headless browser is browser; the phone is not this kit; what a past session did on the desktop is sessions or mike"
+cite = "a window address and class, a monitor name, or the script and the field the answer came from; a screenshot path for what a window showed"
+instructions = "instructions.md"
+bench = "bench/questions.json"
+acts = [
+  "desk.focus, desk.workspace, desk.close, desk.float, desk.moveToWorkspace, desk.resize, desk.fullscreen, desk.launch (windows and apps)",
+  "desk.dispatch, desk.keyword, desk.reload, hyprctl dispatch, keyword, reload, setprop, eval (Hyprland itself)",
+  "desk.click, desk.type, desk.key, desk.scroll, desk.drag (the mouse and keyboard, through the program named by DESK_HELPER)",
+  "desk.omarchy for commands that set something: theme set, font set, theme bg next or set, toggle, restart, bar, hyprland, launch, reminder, notification, brightness, audio, display",
+]
+
+[[settings]]
+key = "DESK_HELPER"
+about = "the program that sends mouse and keyboard input for desk.click, desk.type, desk.key, desk.scroll and desk.drag, called as `<program> click|type|key|scroll|drag ...` (see the README for the arguments). Reading the desktop needs none; without it those five calls refuse"
+
+[[sources]]
+kind = "module"
+name = "desk"
+module = "desk.mjs"
+api = "api.d.ts"
+
+[[roles]]
+name = "observer"
+when = "a question about what is open, on screen, bound to a key, ruled, themed or showing in a window"
+patterns = ["\\b(which|what|is|are|how many)\\b.*\\b(window|windows|workspace|monitor|display|screen|bind(ing)?|shortcut|theme|font|background|open|focused|showing)\\b"]
+instructions = "roles/observer.md"
+
+[[roles]]
+name = "operator"
+when = "a request to do something on the desktop: focus, move, close, float or resize a window, switch workspace, launch an app, change theme or font, click, type or press keys"
+patterns = ["^(please )?(focus|move|close|float|resize|switch|open|launch|click|type|press|set|change|toggle|reload)\\b"]
+instructions = "roles/operator.md"
