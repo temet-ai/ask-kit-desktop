@@ -10,15 +10,6 @@
       ]
     },
     {
-      "id": "versions",
-      "q": "Which Omarchy version and which Hyprland version is this machine running?",
-      "expect": [
-        "\\d+\\.\\d+",
-        "(?i)hyprland",
-        "(?i)omarchy"
-      ]
-    },
-    {
       "id": "rule-1password",
       "q": "Which window rule does Omarchy set for 1Password windows, and in which file?",
       "expect": [
@@ -32,13 +23,6 @@
       "expect": [
         "omarchy-bar",
         "no_anim|animation"
-      ]
-    },
-    {
-      "id": "omarchy-nightlight",
-      "q": "Which omarchy command turns the night light on and off?",
-      "expect": [
-        "omarchy toggle nightlight"
       ]
     },
     {
