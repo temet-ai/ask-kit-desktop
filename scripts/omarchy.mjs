@@ -34,21 +34,29 @@ export default async function ({ desk }, { for: want, group, themes } = {}) {
   const groups = {};
   for (const c of all) (groups[c.group] ??= []).push(c.name);
   for (const [g, names] of Object.entries(groups)) (purposes[purposeOf(g)] ??= []).push(`${g} (${names.length})`);
-  const hv = await desk.hyprJson("version");
+  const [hv, version, channel, theme, font, background] = await Promise.all([
+    desk.hyprJson("version"),
+    one(desk, "version"),
+    one(desk, "channel", "current"),
+    one(desk, "theme", "current"),
+    one(desk, "font", "current"),
+    one(desk, "theme", "bg", "current"),
+  ]);
   const out = {
-    omarchy: await one(desk, "version"),
-    channel: await one(desk, "channel", "current"),
+    omarchy: version,
+    channel,
     hyprland: { version: hv.version, date: hv.commit_date },
-    theme: await one(desk, "theme", "current"),
-    font: await one(desk, "font", "current"),
-    background: await one(desk, "theme", "bg", "current"),
+    theme,
+    font,
+    background,
     commands: all.length,
     purposes,
     next: "pass for: '<words>' or group: '<group>' to list commands",
   };
   if (themes) {
-    out.themes = (await desk.omarchy("theme", "list")).out.split("\n").filter(Boolean);
-    out.fonts = (await desk.omarchy("font", "list")).out.split("\n").filter(Boolean);
+    const [t, f] = await Promise.all([desk.omarchy("theme", "list"), desk.omarchy("font", "list")]);
+    out.themes = t.out.split("\n").filter(Boolean);
+    out.fonts = f.out.split("\n").filter(Boolean);
   }
   return out;
 }

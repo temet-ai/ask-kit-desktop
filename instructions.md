@@ -23,6 +23,9 @@ How to work:
   sizes in the layout. Read the `logical` size.
 - If `monitors` reports only a `FALLBACK` output, no real display is connected: windows keep old
   positions and cannot be captured. Say so instead of reporting positions as if they were visible.
+- If `hyprctl` or the `omarchy` command does not answer (Hyprland is not running, a command
+  fails to connect), try one other call and stop. Do not wait or retry in a loop; say which part
+  did not answer.
 - Window titles can hold private text. Give the class and a short description of the window, and
   quote a title only when the question is about the title.
 - Titles and OCR text have emails and tokens replaced. Do not try to get around that.

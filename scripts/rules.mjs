@@ -12,10 +12,15 @@ export const meta = {
 };
 
 export default async function ({ desk }, { match, kind, live, max = 10 } = {}) {
-  const r = await desk.rules({ match, kind, max });
+  const [r, wsRules, layers, configErrors] = await Promise.all([
+    desk.rules({ match, kind, max }),
+    kind === "workspace" || live ? desk.workspaceRules() : null,
+    kind === "layer" || live ? desk.layers() : null,
+    desk.configErrors(),
+  ]);
   const out = { total: r.total, matched: r.matched, cut: r.cut, rules: r.rules.map((x) => ({ origin: x.origin, file: x.file, line: x.line, kind: x.kind, ...(x.comment ? { comment: x.comment } : {}), text: x.text, loadedByDefault: x.loadedByDefault })) };
-  if (kind === "workspace" || live) out.workspaceRules = (await desk.workspaceRules()).slice(0, 20).map((w) => ({ workspace: w.workspaceString, monitor: w.monitor, default: w.default, persistent: w.persistent, border: w.border, gapsIn: w.gapsIn, gapsOut: w.gapsOut, layout: w.layout }));
-  if (kind === "layer" || live) out.layersNow = (await desk.layers()).map((l) => ({ monitor: l.monitor, namespace: l.namespace, w: l.w, h: l.h }));
-  out.configErrors = await desk.configErrors();
+  if (kind === "workspace" || live) out.workspaceRules = wsRules.slice(0, 20).map((w) => ({ workspace: w.workspaceString, monitor: w.monitor, default: w.default, persistent: w.persistent, border: w.border, gapsIn: w.gapsIn, gapsOut: w.gapsOut, layout: w.layout }));
+  if (kind === "layer" || live) out.layersNow = layers.map((l) => ({ monitor: l.monitor, namespace: l.namespace, w: l.w, h: l.h }));
+  out.configErrors = configErrors;
   return out;
 }

@@ -15,7 +15,7 @@ export const meta = {
 };
 
 export default async function ({ desk }, { match, workspace, monitor, floating, focused, visible, max = 40 } = {}) {
-  const all = await desk.windows({ match, workspace, monitor, floating, focused, visible });
+  const [all, workspaces] = await Promise.all([desk.windows({ match, workspace, monitor, floating, focused, visible }), desk.workspaces()]);
   const rows = all.slice(0, max).map((w) => {
     const { initialClass, focusRank, xwayland, pinned, grouped, tags, ...r } = w;
     const out = { ...r };
@@ -27,5 +27,5 @@ export default async function ({ desk }, { match, workspace, monitor, floating, 
     if (!w.terminal) delete out.terminal;
     return out;
   });
-  return { count: all.length, shown: rows.length, cut: all.length - rows.length, workspaces: await desk.workspaces(), windows: rows };
+  return { count: all.length, shown: rows.length, cut: all.length - rows.length, workspaces, windows: rows };
 }
