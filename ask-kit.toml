@@ -1,6 +1,6 @@
 id = "temet.desktop"
 name = "desktop"
-version = "0.1.0"
+version = "0.1.1"
 min_ask_kit = "0.2.0"
 platforms = ["linux"]
 requires = ["hyprctl", "grim", "tesseract", "omarchy"]
@@ -17,6 +17,7 @@ acts = [
   "desk.click, desk.type, desk.key, desk.scroll, desk.drag (the mouse and keyboard, through the program named by DESK_HELPER)",
   "desk.omarchy for commands that set something: theme set, font set, theme bg next or set, toggle, restart, bar, hyprland, launch, reminder, notification, brightness, audio, display",
 ]
+reads = ["hyprctl clients", "hyprctl monitors", "hyprctl workspaces", "hyprctl activewindow", "hyprctl binds", "hyprctl getoption"]
 
 [[settings]]
 key = "DESK_HELPER"
